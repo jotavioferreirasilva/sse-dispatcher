@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package sse_server;
+
+option go_package = "sse/go;sse_server";
+
+import "google/protobuf/empty.proto";
+
+service PushMessage {
+  rpc PusheMessage(PushMessageRequest) returns (google.protobuf.Empty) {}
+}
+
+message PushMessageRequest {
+  string message = 1;
+}

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dispacher_server;
+
+option go_package = "dispatcher/go;dispatcher_server";
+
+import "google/protobuf/empty.proto";
+
+service PushMessage {
+  rpc PushMessage(PushMessageRequest) returns (google.protobuf.Empty) {}
+}
+
+message PushMessageRequest {
+  string message = 1;
+}
