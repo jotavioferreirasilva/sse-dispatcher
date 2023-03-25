@@ -5,6 +5,7 @@ import (
 	"backend/src/dispatcher_client"
 	dispatcher_server "backend/src/dispatcher_client/dispathcer_server_proto"
 	"backend/src/sse"
+	server "backend/src/sse_server"
 	"context"
 	"encoding/json"
 	"log"
@@ -16,8 +17,9 @@ type Message struct {
 }
 
 func init() {
-	sse.Clients = sse.NewSSE()
 	config.BackendConfiguration = config.NewConfig(".env")
+	sse.Clients = sse.NewSSE()
+	server.GRPCServer = server.Start()
 }
 
 func main() {
@@ -60,7 +62,7 @@ func main() {
 		}
 	})
 
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":5000", nil)
 
 	if err != nil {
 		log.Fatal(err)

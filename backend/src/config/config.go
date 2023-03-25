@@ -13,6 +13,8 @@ var BackendConfiguration Config
 type Config struct {
 	DispatcherServerHost string
 	DispatcherServerPort uint32
+	SSEServerHost        string
+	SSEServerPort        uint32
 }
 
 func NewConfig(path string) Config {
@@ -23,6 +25,8 @@ func NewConfig(path string) Config {
 	var config Config
 	config.DispatcherServerHost = getDispatcherHost()
 	config.DispatcherServerPort = getDispatcherPort()
+	config.SSEServerHost = getSSEServerHost()
+	config.SSEServerPort = getSSEServerPort()
 	return config
 }
 
@@ -55,4 +59,20 @@ func loadEnvironmentFile(path string) {
 	if err := godotenv.Load(path); err != nil {
 		log.Fatal(err.Error())
 	}
+}
+
+func getSSEServerPort() uint32 {
+	envSSEServerPort := os.Getenv("SSE_SERVER_PORT")
+
+	sseServerPort, err := strconv.Atoi(envSSEServerPort)
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	return uint32(sseServerPort)
+}
+
+func getSSEServerHost() string {
+	return os.Getenv("SSE_SERVER_HOST")
 }

@@ -1,9 +1,9 @@
 package server
 
 import (
-	"dispatcher/src/config"
-	"dispatcher/src/handler"
-	dispatcher_server "dispatcher/src/proto"
+	"backend/src/config"
+	"backend/src/sse_server/handler"
+	sse_server "backend/src/sse_server/proto"
 	"fmt"
 	"google.golang.org/grpc"
 	"log"
@@ -25,14 +25,8 @@ func Start() *GRPC {
 		Server: grpc.NewServer(),
 	}
 	server.initListener()
-	dispatcher_server.RegisterPushMessageServer(server.Server, &handler.PushMessageService{})
+	sse_server.RegisterPushMessageServer(server.Server, &handler.PushMessageService{})
 	go stopListener(server.Server)
-
-	go func() {
-		if err := server.Server.Serve(server.Listener); err != nil {
-			log.Fatal(err.Error())
-		}
-	}()
 
 	return server
 }
@@ -48,7 +42,7 @@ func stopListener(server *grpc.Server) {
 
 func (s *GRPC) initListener() {
 	var err error
-	addr := fmt.Sprintf("%s:%d", config.DispatcherServerConfiguration.Host, config.DispatcherServerConfiguration.Port)
+	addr := fmt.Sprintf("%s:%d", config.BackendConfiguration.SSEServerHost, config.BackendConfiguration.SSEServerPort)
 
 	s.Listener, err = net.Listen("tcp", addr)
 	if err != nil {
