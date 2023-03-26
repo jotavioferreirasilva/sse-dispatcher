@@ -15,7 +15,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 	"log"
-	"time"
 )
 
 type PushMessageService struct {
@@ -74,8 +73,7 @@ func sendMessageToBackend(context context.Context, req *dispatcher_server.PushMe
 	}(conn)
 	c := sse_server.NewPushMessageClient(conn)
 
-	now := time.Now().Format("2006/01/02 15:04:05")
-	fmt.Printf("%s Sending message \"%s\" to %s...\n", now, req.Message, host)
+	log.Printf(">>> Sending message \"%s\" to %s...>>>\n", req.Message, host)
 	_, err = c.PushMessage(context, &sse_server.PushMessageRequest{
 		Message: req.Message,
 	})
@@ -84,8 +82,5 @@ func sendMessageToBackend(context context.Context, req *dispatcher_server.PushMe
 		log.Print(err)
 		return err
 	}
-
-	now = time.Now().Format("2006/01/02 15:04:05")
-	fmt.Printf("%s Message sent", now)
 	return nil
 }

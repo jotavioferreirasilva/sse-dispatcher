@@ -19,9 +19,8 @@ services:
       - traefik
   backend:
     image: backend:v1.0.0
-    container_name: backend
     environment:
-      - SSE_SERVER_HOST=backend
+      - SSE_SERVER_HOST=$HOSTNAME
       - SSE_SERVER_PORT=50052
       - DISPATCHER_HOST=dispatcher
       - DISPATCHER_PORT=50051
@@ -31,8 +30,6 @@ services:
       - "traefik.http.routers.backend.entrypoints=web"
       - "traefik.http.routers.backend.rule=Host(`localhost`) && PathPrefix(`/`)"
       - "traefik.http.services.backend.loadbalancer.server.port=5000"
-    ports:
-      - "5000:5000"
     volumes:
        - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
@@ -41,7 +38,6 @@ services:
       - dispatcher
   dispatcher:
     image: dispatcher:v1.0.0
-    container_name: dispatcher
     environment:
       - HOST=dispatcher
       - PORT=50051
@@ -50,8 +46,6 @@ services:
       - DOCKER_SSE_SERVER_PORT=50052
     labels:
       - dispatcher-server
-    ports:
-      - "50051:50051"
     volumes:
        - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:

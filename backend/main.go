@@ -62,6 +62,7 @@ func main() {
 		}
 	})
 
+	log.Printf("Server started on port %d", 5000)
 	err := http.ListenAndServe(":5000", nil)
 
 	if err != nil {

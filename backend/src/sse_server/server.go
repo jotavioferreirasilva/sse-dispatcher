@@ -28,6 +28,12 @@ func Start() *GRPC {
 	sse_server.RegisterPushMessageServer(server.Server, &handler.PushMessageService{})
 	go stopListener(server.Server)
 
+	go func() {
+		if err := server.Server.Serve(server.Listener); err != nil {
+			log.Fatal(err.Error())
+		}
+	}()
+
 	return server
 }
 
@@ -49,6 +55,6 @@ func (s *GRPC) initListener() {
 		log.Fatalf("Failed to listen: %s. Error: %s", addr, err)
 	}
 
-	log.Printf("Started listening at %s", addr)
+	log.Printf("gRPC Server: Started listening at %s", addr)
 	return
 }

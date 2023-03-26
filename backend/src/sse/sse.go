@@ -2,6 +2,7 @@ package sse
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 )
@@ -87,6 +88,8 @@ func (sse *Client) ServeHTTP(writer http.ResponseWriter, request *http.Request) 
 		}
 		wg.Done()
 	}()
+
+	log.Printf("Client %s connected", clientID)
 
 	wg.Wait()
 }

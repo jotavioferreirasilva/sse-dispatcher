@@ -7,6 +7,7 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"log"
 )
 
 type PushMessageService struct {
@@ -18,7 +19,7 @@ func (pushMessageService PushMessageService) PushMessage(ctx context.Context, re
 		err := status.New(codes.InvalidArgument, "Message cannot be empty").Err()
 		return nil, err
 	}
-
+	log.Printf("<<< Received message: %s<<<", req.Message)
 	sse.Clients.Publish(req.Message)
 
 	return &empty.Empty{}, nil
