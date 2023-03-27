@@ -72,18 +72,29 @@ func (sse *Client) ServeHTTP(writer http.ResponseWriter, request *http.Request) 
 	defer func() {
 		sse.RemoveClient(clientID)
 		close(messageChannel)
+		log.Printf("Client %s disconnected", clientID)
 	}()
 
 	wg.Add(1)
 	go func() {
 		for {
+			var stopConnection bool
+			notify := request.Context().Done()
+
 			select {
+			case <-notify:
+				stopConnection = true
+				break
 			case message, ok := <-messageChannel:
 				if !ok {
 					return
 				}
 				fmt.Fprintf(writer, "data: %s\n\n", message)
 				flusher.Flush()
+			}
+
+			if stopConnection {
+				break
 			}
 		}
 		wg.Done()
